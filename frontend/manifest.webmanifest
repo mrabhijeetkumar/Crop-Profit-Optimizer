@@ -1,0 +1,29 @@
+{
+    "name": "KrishiPro Crop Profit Optimizer",
+    "short_name": "KrishiPro",
+    "description": "AI-powered crop profit optimization with market and weather intelligence.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#faf7f0",
+    "theme_color": "#1a4a20",
+    "icons": [
+        {
+            "src": "/static/images/icon-192.svg",
+            "sizes": "192x192",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "/static/images/icon-512.svg",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "/static/images/maskable-512.svg",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "maskable"
+        }
+    ]
+}

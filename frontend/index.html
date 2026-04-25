@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a4a20">
+    <title>KrishiPro — Crop Profit Optimizer</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-box">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Analyzing Crop Data</div>
+            <div class="loading-sub">Our AI is processing your inputs...</div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+    <div class="online-indicator online" id="onlineIndicator">Online</div>
+
+    <nav class="nav" id="mainNav">
+        <div class="nav-inner">
+            <div class="nav-brand">
+                <div class="nav-logo">🌾</div>
+                <div>
+                    <div class="nav-brand-text">KrishiPro</div>
+                    <div class="nav-brand-tag">AI Crop Optimizer</div>
+                </div>
+            </div>
+            <div class="nav-links">
+                <div class="nav-link active" id="navLinkOptimizer" onclick="scrollToSection('optimizer')">Optimizer
+                </div>
+                <div class="nav-link" id="navLinkMarket" onclick="scrollToSection('market')">Market Prices</div>
+                <div class="nav-link" id="navLinkCalculator" onclick="scrollToSection('calculator')">Calculator</div>
+                <div class="nav-link" id="navLinkWeather" onclick="scrollToSection('weather')">Weather</div>
+                <div class="nav-link" id="navLinkFeatures" onclick="scrollToSection('features')">Features</div>
+            </div>
+            <div class="nav-tools">
+                <select class="nav-lang-select" id="languageSelect" onchange="languageManager?.setLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                </select>
+                <button class="nav-tool-btn" id="themeToggleBtn" onclick="toggleTheme()">🌙 Dark</button>
+            </div>
+            <button class="nav-cta" id="navCtaBtn" onclick="scrollToSection('optimizer')">Get Recommendation →</button>
+            <div class="nav-hamburger" onclick="toggleMobileNav()" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-link" id="mobileNavOptimizer" onclick="scrollToSection('optimizer');toggleMobileNav()">🌱
+            Crop Optimizer</div>
+        <div class="mobile-nav-link" id="mobileNavMarket" onclick="scrollToSection('market');toggleMobileNav()">📈
+            Market Prices</div>
+        <div class="mobile-nav-link" id="mobileNavCalculator" onclick="scrollToSection('calculator');toggleMobileNav()">
+            🧮 Profit Calculator
+        </div>
+        <div class="mobile-nav-link" id="mobileNavWeather" onclick="scrollToSection('weather');toggleMobileNav()">🌤
+            Weather Forecast</div>
+        <div class="mobile-nav-link" id="mobileNavFeatures" onclick="scrollToSection('features');toggleMobileNav()">⚡
+            Features</div>
+    </div>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-bg-pattern"></div>
+        <div class="hero-grain"></div>
+        <div class="hero-floats" id="heroFloats">
+            <div class="float-card">
+                <div class="float-card-icon">🌾</div>
+                <div>
+                    <div class="float-card-text">Wheat MSP</div>
+                    <div class="float-card-val">₹2,275/qtl</div>
+                </div>
+            </div>
+            <div class="float-card">
+                <div class="float-card-icon">📈</div>
+                <div>
+                    <div class="float-card-text">Avg Profit Increase</div>
+                    <div class="float-card-val">+34%</div>
+                </div>
+            </div>
+            <div class="float-card">
+                <div class="float-card-icon">🤖</div>
+                <div>
+                    <div class="float-card-text">AI Accuracy</div>
+                    <div class="float-card-val">94.2%</div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                <span id="heroBadgeText">AI-Powered • Real-Time Mandi Data • Weather-Aware</span>
+            </div>
+            <h1 class="hero-title">
+                Maximize Your<br>Crop <span>Profit</span> with AI
+            </h1>
+            <p class="hero-sub" id="heroSubtitle">
+                KrishiPro combines machine learning, live mandi prices, and local weather data to recommend the most
+                profitable crops for your specific land and conditions.
+            </p>
+            <div class="hero-actions">
+                <button class="btn-primary" id="heroPrimaryBtn" onclick="scrollToSection('optimizer')">
+                    🌱 Start Optimizing
+                </button>
+                <button class="btn-outline" id="heroSecondaryBtn" onclick="scrollToSection('market')">
+                    📊 View Market Prices
+                </button>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-val" id="statCrops">0</div>
+                    <div class="hero-stat-label">Crops Analyzed</div>
+                </div>
+                <div class="hero-divider"></div>
+                <div class="hero-stat">
+                    <div class="hero-stat-val" id="statFarmers">0</div>
+                    <div class="hero-stat-label">Farmers Helped</div>
+                </div>
+                <div class="hero-divider"></div>
+                <div class="hero-stat">
+                    <div class="hero-stat-val" id="statAccuracy">0%</div>
+                    <div class="hero-stat-label">Prediction Accuracy</div>
+                </div>
+                <div class="hero-divider"></div>
+                <div class="hero-stat">
+                    <div class="hero-stat-val" id="statStates">0</div>
+                    <div class="hero-stat-label">States Covered</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section optimizer-section" id="optimizer">
+        <div class="section-inner">
+            <div class="section-header">
+                <div class="section-label">AI Engine</div>
+                <h2 class="section-title">Crop <span>Profit Optimizer</span></h2>
+                <p class="section-desc">Enter your land conditions, budget, and location — our AI recommends the top
+                    profitable crops with full profit analysis.</p>
+            </div>
+            <div class="optimizer-grid reveal">
+                <div class="optimizer-left">
+                    <div class="form-title">Your Farm Inputs</div>
+                    <div class="form-subtitle">Fill in details for accurate AI recommendations</div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label"><span class="form-label-icon">🌍</span> State</label>
+                            <select class="form-input form-select" id="stateSelect">
+                                <option value="">Select State</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><span class="form-label-icon">🏙</span> District</label>
+                            <select class="form-input form-select" id="districtSelect" disabled>
+                                <option value="">Select District</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label"><span class="form-label-icon">🌱</span> Season</label>
+                        <select class="form-input form-select" id="seasonSelect">
+                            <option value="">Select Season</option>
+                            <option value="kharif">Kharif (Monsoon)</option>
+                            <option value="rabi">Rabi (Winter)</option>
+                            <option value="zaid">Zaid (Summer)</option>
+                            <option value="yearround">Year Round</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label"><span class="form-label-icon">🏡</span> Land Area (Acres)</label>
+                        <div class="range-group">
+                            <div style="display:flex;justify-content:space-between;align-items:center">
+                                <div style="font-size:13px;color:var(--text-muted)">Land size</div>
+                                <div class="range-val" id="landVal">5 acres</div>
+                            </div>
+                            <div class="range-track">
+                                <input type="range" class="range-input" id="landRange" min="0.5" max="50" step="0.5"
+                                    value="5" oninput="updateRange('landRange','landVal',v=>v+' acres')">
+                            </div>
+                            <div class="range-labels"><span>0.5 ac</span><span>25 ac</span><span>50 ac</span></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label"><span class="form-label-icon">🧪</span> Soil Type</label>
+                            <select class="form-input form-select" id="soilSelect">
+                                <option value="">Select Soil</option>
+                                <option value="alluvial">Alluvial (Domat)</option>
+                                <option value="black">Black (Regur)</option>
+                                <option value="red">Red Laterite</option>
+                                <option value="sandy">Sandy Loam</option>
+                                <option value="clay">Clay</option>
+                                <option value="loamy">Loamy</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><span class="form-label-icon">💧</span> Irrigation Source</label>
+                            <select class="form-input form-select" id="irrigationSelect">
+                                <option value="">Select Irrigation</option>
+                                <option value="canal">Canal Irrigation</option>
+                                <option value="borewell">Borewell/Tubewell</option>
+                                <option value="drip">Drip Irrigation</option>
+                                <option value="rainfed">Rainfed Only</option>
+                                <option value="pond">Pond/Lake</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label"><span class="form-label-icon">💰</span> Total Budget (₹)</label>
+                            <input type="number" class="form-input" id="budgetInput" placeholder="e.g. 50000" min="5000"
+                                max="5000000" step="1000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><span class="form-label-icon">📍</span> Pin Code</label>
+                            <div class="location-row">
+                                <input type="text" class="form-input" id="pincodeInput" placeholder="e.g. 141001"
+                                    maxlength="6">
+                                <button class="location-btn" onclick="detectLocation()">📍 Auto</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label"><span class="form-label-icon">🌡</span> Soil Nitrogen Level</label>
+                        <div class="range-group">
+                            <div style="display:flex;justify-content:space-between;align-items:center">
+                                <div style="font-size:13px;color:var(--text-muted)">Nitrogen (kg/ha)</div>
+                                <div class="range-val" id="nitrogenVal">80 kg/ha</div>
+                            </div>
+                            <div class="range-track">
+                                <input type="range" class="range-input" id="nitrogenRange" min="0" max="200" step="5"
+                                    value="80" oninput="updateRange('nitrogenRange','nitrogenVal',v=>v+' kg/ha')">
+                            </div>
+                            <div class="range-labels"><span>Low (0)</span><span>Medium (100)</span><span>High
+                                    (200)</span></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label"><span class="form-label-icon">🌧</span> Annual Rainfall
+                                (mm)</label>
+                            <input type="number" class="form-input" id="rainfallInput" placeholder="e.g. 800" min="100"
+                                max="3000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><span class="form-label-icon">📊</span> Risk Appetite</label>
+                            <select class="form-input form-select" id="riskSelect">
+                                <option value="low">Low Risk (Safe)</option>
+                                <option value="medium" selected>Medium Risk</option>
+                                <option value="high">High Risk (High Reward)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="analyze-btn" onclick="analyzeCrops()" id="analyzeBtn">
+                        <span>🤖</span> Analyze & Get Recommendations
+                    </button>
+                </div>
+
+                <div class="optimizer-right">
+                    <div class="insights-dashboard reveal">
+                        <div class="insights-head">
+                            <div>
+                                <div class="insights-title" id="insightsTitle" data-i18n="insights_title">Strategy
+                                    Dashboard</div>
+                                <div class="insights-sub" id="insightsSub" data-i18n="insights_sub">Live plan based on
+                                    your latest recommendation run</div>
+                            </div>
+                            <div class="insights-pill" id="insightStatusPill" data-i18n="insight_status_awaiting">
+                                Awaiting Analysis</div>
+                        </div>
+                        <div class="insights-kpis">
+                            <div class="insight-card">
+                                <div class="insight-label" id="insightLabelBestCrop"
+                                    data-i18n="insight_label_best_crop">Best Crop</div>
+                                <div class="insight-value" id="insightBestCrop">—</div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-label" id="insightLabelProjectedProfit"
+                                    data-i18n="insight_label_projected_profit">Projected Profit</div>
+                                <div class="insight-value" id="insightBestProfit">₹0</div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-label" id="insightLabelRoiPotential" data-i18n="insight_label_roi">
+                                    ROI Potential</div>
+                                <div class="insight-value" id="insightBestROI">0%</div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-label" id="insightLabelRiskOutlook" data-i18n="insight_label_risk">
+                                    Risk Outlook</div>
+                                <div class="insight-value" id="insightRiskMix">—</div>
+                            </div>
+                        </div>
+                        <div class="insight-timeline" id="insightTimeline">
+                            <div class="insight-step" id="insightTimelineDefault" data-i18n="insight_timeline_default">
+                                Run analysis to generate a smart crop action timeline.</div>
+                        </div>
+                    </div>
+                    <div class="results-panel">
+                        <div class="results-header">
+                            <div class="results-title" data-i18n="recommendations_title">AI Recommendations</div>
+                            <div class="results-sub" id="resultsSubtitle">Enter your farm details to get started</div>
+                        </div>
+                        <div class="results-toolbar">
+                            <label for="resultSort" class="results-sort-label" id="resultsSortLabel"
+                                data-i18n="sort_by">Sort by</label>
+                            <select id="resultSort" class="results-sort" onchange="sortLatestResults(this.value)">
+                                <option value="profit_desc" id="sortOptionProfit" data-i18n="sort_profit">Highest Profit
+                                </option>
+                                <option value="roi_desc" id="sortOptionRoi" data-i18n="sort_roi">Highest ROI</option>
+                                <option value="risk_asc" id="sortOptionRisk" data-i18n="sort_risk">Lowest Risk</option>
+                                <option value="confidence_desc" id="sortOptionConfidence" data-i18n="sort_confidence">
+                                    Best AI Confidence</option>
+                            </select>
+                        </div>
+                        <div id="resultsContainer">
+                            <div class="result-empty">
+                                <div class="result-empty-icon">🌾</div>
+                                <div class="result-empty-text">Your personalized crop recommendations will appear here
+                                    after you submit your farm details.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section market-section" id="market">
+        <div class="section-inner">
+            <div class="section-header reveal">
+                <div class="section-label">Live Mandi Data</div>
+                <h2 class="section-title">Current <span>Market Prices</span></h2>
+                <p class="section-desc">Real-time crop prices from major mandis across India. Updated every 30 minutes.
+                </p>
+            </div>
+            <div class="market-ticker-wrap reveal">
+                <div class="market-ticker" id="ticker"></div>
+            </div>
+            <div class="market-grid" id="marketGrid"></div>
+        </div>
+    </section>
+
+    <section class="section calculator-section" id="calculator">
+        <div class="section-inner">
+            <div class="section-header reveal">
+                <div class="section-label">Financial Tool</div>
+                <h2 class="section-title">Advanced <span>Profit Calculator</span></h2>
+                <p class="section-desc">Calculate exact profit, ROI, and break-even points for any crop scenario.</p>
+            </div>
+            <div class="calculator-wrap reveal">
+                <div class="calc-header">
+                    <div class="calc-header-text">
+                        <div class="title">Profit & Loss Estimator</div>
+                        <div class="sub">Enter crop details to calculate projected profit</div>
+                    </div>
+                    <div style="font-size:36px">🧮</div>
+                </div>
+                <div class="calc-body">
+                    <div class="calc-inputs">
+                        <div>
+                            <div class="calc-label">Select Crop</div>
+                            <select class="calc-input" id="calcCrop" onchange="updateCalc()">
+                                <option value="wheat">🌾 Wheat</option>
+                                <option value="rice">🌾 Rice (Paddy)</option>
+                                <option value="cotton">🌿 Cotton</option>
+                                <option value="sugarcane">🎋 Sugarcane</option>
+                                <option value="soybean">🫘 Soybean</option>
+                                <option value="maize">🌽 Maize</option>
+                                <option value="mustard">🌼 Mustard</option>
+                                <option value="groundnut">🥜 Groundnut</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div class="calc-label">Land Area (Acres)</div>
+                            <input type="number" class="calc-input" id="calcArea" value="5" min="0.5" max="200"
+                                step="0.5" oninput="updateCalc()">
+                        </div>
+                        <div>
+                            <div class="calc-label">Expected Yield (Qtl/Acre)</div>
+                            <input type="number" class="calc-input" id="calcYield" value="20" min="1" max="200"
+                                oninput="updateCalc()">
+                        </div>
+                        <div>
+                            <div class="calc-label">Market Price (₹/Qtl)</div>
+                            <input type="number" class="calc-input" id="calcPrice" value="2275" min="100"
+                                oninput="updateCalc()">
+                        </div>
+                        <div>
+                            <div class="calc-label">Seed Cost (₹/Acre)</div>
+                            <input type="number" class="calc-input" id="calcSeed" value="1200" min="0"
+                                oninput="updateCalc()">
+                        </div>
+                        <div>
+                            <div class="calc-label">Fertilizer Cost (₹/Acre)</div>
+                            <input type="number" class="calc-input" id="calcFert" value="3500" min="0"
+                                oninput="updateCalc()">
+                        </div>
+                        <div>
+                            <div class="calc-label">Labour Cost (₹/Acre)</div>
+                            <input type="number" class="calc-input" id="calcLabour" value="4000" min="0"
+                                oninput="updateCalc()">
+                        </div>
+                        <div>
+                            <div class="calc-label">Other Costs (₹/Acre)</div>
+                            <input type="number" class="calc-input" id="calcOther" value="1500" min="0"
+                                oninput="updateCalc()">
+                        </div>
+                    </div>
+                    <div class="calc-results">
+                        <div class="calc-result-box highlight">
+                            <div class="calc-result-label">💰 Total Net Profit</div>
+                            <div class="calc-result-value" id="calcNetProfit">₹0</div>
+                            <div class="calc-result-note" id="calcProfitNote">--</div>
+                        </div>
+                        <div class="calc-result-box">
+                            <div class="calc-result-label">📦 Total Revenue</div>
+                            <div class="calc-result-value" id="calcRevenue">₹0</div>
+                        </div>
+                        <div class="calc-result-box">
+                            <div class="calc-result-label">📉 Total Cost</div>
+                            <div class="calc-result-value" id="calcTotalCost">₹0</div>
+                        </div>
+                        <div class="calc-breakdown">
+                            <div class="calc-breakdown-row">
+                                <span class="calc-breakdown-label">ROI (Return on Investment)</span>
+                                <span class="calc-breakdown-val" id="calcROI">0%</span>
+                            </div>
+                            <div class="calc-breakdown-row">
+                                <span class="calc-breakdown-label">Break-even Price (₹/Qtl)</span>
+                                <span class="calc-breakdown-val" id="calcBreakeven">₹0</span>
+                            </div>
+                            <div class="calc-breakdown-row">
+                                <span class="calc-breakdown-label">Profit per Acre</span>
+                                <span class="calc-breakdown-val" id="calcPerAcre">₹0</span>
+                            </div>
+                            <div class="calc-breakdown-row">
+                                <span class="calc-breakdown-label">Total Production (Qtl)</span>
+                                <span class="calc-breakdown-val" id="calcProduction">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section chart-section">
+        <div class="section-inner">
+            <div class="section-header reveal">
+                <div class="section-label">Price Analytics</div>
+                <h2 class="section-title">Crop Price <span>Trends</span></h2>
+                <p class="section-desc">Historical price movements to help you plan selling strategy.</p>
+            </div>
+            <div class="chart-wrap reveal">
+                <div class="chart-header">
+                    <div class="chart-header-left">
+                        <div class="title">Monthly Price Comparison</div>
+                        <div class="sub">Price in ₹ per quintal</div>
+                    </div>
+                    <div class="chart-filters">
+                        <button class="chart-filter-btn active" onclick="setChartFilter(this,'3m')">3M</button>
+                        <button class="chart-filter-btn" onclick="setChartFilter(this,'6m')">6M</button>
+                        <button class="chart-filter-btn" onclick="setChartFilter(this,'1y')">1Y</button>
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background:#2d8c38"></div>Wheat
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background:#f59e0b"></div>Rice
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background:#3b82f6"></div>Soybean
+                        </div>
+                    </div>
+                    <canvas id="priceChart" height="280"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section weather-section" id="weather">
+        <div class="section-inner">
+            <div class="section-header reveal">
+                <div class="section-label">Weather Intelligence</div>
+                <h2 class="section-title">Agricultural <span>Weather Forecast</span></h2>
+                <p class="section-desc">Crop-specific weather insights and 7-day farming advisory.</p>
+            </div>
+            <div class="weather-grid">
+                <div>
+                    <div class="weather-main reveal">
+                        <div class="weather-location-row">
+                            <div class="weather-location-text">📍 <span id="weatherLocation">Punjab, India</span></div>
+                            <button class="weather-refresh-btn" onclick="refreshWeather()">🔄 Refresh</button>
+                        </div>
+                        <div class="weather-main-data">
+                            <div>
+                                <div class="weather-temp" id="weatherTemp">28<span class="weather-temp-unit">°C</span>
+                                </div>
+                                <div class="weather-condition" id="weatherCondition">Partly Cloudy — Good for fieldwork
+                                </div>
+                            </div>
+                            <div class="weather-icon-big" id="weatherIcon">⛅</div>
+                        </div>
+                        <div class="weather-metrics">
+                            <div class="weather-metric">
+                                <div class="weather-metric-val" id="weatherHumidity">62%</div>
+                                <div class="weather-metric-label">Humidity</div>
+                            </div>
+                            <div class="weather-metric">
+                                <div class="weather-metric-val" id="weatherWind">14 km/h</div>
+                                <div class="weather-metric-label">Wind Speed</div>
+                            </div>
+                            <div class="weather-metric">
+                                <div class="weather-metric-val" id="weatherRain">4mm</div>
+                                <div class="weather-metric-label">Rainfall</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="advisory-cards reveal reveal-delay-1">
+                        <div class="advisory-title">🌾 Crop Advisory</div>
+                        <div class="advisory-card green">✅ <span>Conditions are ideal for wheat sowing. Soil temperature
+                                and moisture levels are optimal.</span></div>
+                        <div class="advisory-card amber">⚠️ <span>Mild pest pressure expected next week. Consider
+                                applying preventive pesticide on cotton.</span></div>
+                        <div class="advisory-card blue">💧 <span>Irrigation recommended for kharif crops in 2–3 days.
+                                Dry spell likely mid-week.</span></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="weather-forecast reveal reveal-delay-2">
+                        <div class="weather-forecast-title">7-Day Farming Forecast</div>
+                        <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Click any day for crop
+                            impact analysis</div>
+                        <div class="forecast-cards" id="forecastCards"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section features-section" id="features">
+        <div class="section-inner">
+            <div class="section-header reveal">
+                <div class="section-label">Platform Capabilities</div>
+                <h2 class="section-title">Everything You Need to <span>Farm Smarter</span></h2>
+                <p class="section-desc">KrishiPro brings enterprise-grade agricultural intelligence to every farmer.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card reveal">
+                    <div class="feature-icon green">🤖</div>
+                    <div class="feature-title">AI Crop Recommendation</div>
+                    <div class="feature-desc">Our ML model trained on 10+ years of agricultural data analyzes your soil,
+                        climate, and budget to recommend the most profitable crop combinations.</div>
+                    <div class="feature-tags"><span class="feature-tag">Machine Learning</span><span
+                            class="feature-tag">94% Accuracy</span><span class="feature-tag">50+ Crops</span></div>
+                </div>
+                <div class="feature-card reveal reveal-delay-1">
+                    <div class="feature-icon gold">📈</div>
+                    <div class="feature-title">Live Mandi Price Tracking</div>
+                    <div class="feature-desc">Real-time mandi prices from 500+ markets across India with historical
+                        trends, MSP comparison, and price alert notifications.</div>
+                    <div class="feature-tags"><span class="feature-tag">Real-Time</span><span class="feature-tag">500+
+                            Mandis</span><span class="feature-tag">Price Alerts</span></div>
+                </div>
+                <div class="feature-card reveal reveal-delay-2">
+                    <div class="feature-icon blue">🌤</div>
+                    <div class="feature-title">Hyperlocal Weather Intel</div>
+                    <div class="feature-desc">District-level weather forecasts with crop-specific advisories, frost
+                        alerts, rainfall predictions, and optimal sowing/harvesting windows.</div>
+                    <div class="feature-tags"><span class="feature-tag">7-Day Forecast</span><span
+                            class="feature-tag">Crop Advisory</span><span class="feature-tag">Alerts</span></div>
+                </div>
+                <div class="feature-card reveal reveal-delay-1">
+                    <div class="feature-icon green">🧮</div>
+                    <div class="feature-title">Advanced Profit Calculator</div>
+                    <div class="feature-desc">Detailed cost-benefit analysis including input costs, yield projections,
+                        market price scenarios, and ROI calculations for informed decisions.</div>
+                    <div class="feature-tags"><span class="feature-tag">ROI Analysis</span><span
+                            class="feature-tag">Break-even</span><span class="feature-tag">Scenario</span></div>
+                </div>
+                <div class="feature-card reveal reveal-delay-2">
+                    <div class="feature-icon gold">📊</div>
+                    <div class="feature-title">Price Trend Analytics</div>
+                    <div class="feature-desc">Historical price charts, seasonal patterns, and AI-powered price forecasts
+                        help you decide the best time to sell your produce.</div>
+                    <div class="feature-tags"><span class="feature-tag">3Y History</span><span class="feature-tag">AI
+                            Forecast</span><span class="feature-tag">Seasonality</span></div>
+                </div>
+                <div class="feature-card reveal reveal-delay-3">
+                    <div class="feature-icon blue">🗺</div>
+                    <div class="feature-title">Government Scheme Finder</div>
+                    <div class="feature-desc">Automatically matches you with applicable central and state government
+                        schemes, subsidies, and insurance programs for your crop and region.</div>
+                    <div class="feature-tags"><span class="feature-tag">PM-KISAN</span><span class="feature-tag">Crop
+                            Insurance</span><span class="feature-tag">Subsidies</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section how-section">
+        <div class="section-inner">
+            <div class="section-header reveal">
+                <div class="section-label">Process</div>
+                <h2 class="section-title">How <span>KrishiPro Works</span></h2>
+            </div>
+            <div class="how-steps">
+                <div class="how-step reveal">
+                    <div class="how-step-num">📋</div>
+                    <div class="how-step-title">Enter Farm Data</div>
+                    <div class="how-step-desc">Input your land size, soil type, irrigation source, budget, and location
+                        details into our simple form.</div>
+                </div>
+                <div class="how-step reveal reveal-delay-1">
+                    <div class="how-step-num">🤖</div>
+                    <div class="how-step-title">AI Analysis</div>
+                    <div class="how-step-desc">Our ML model processes your inputs against live mandi data, weather
+                        patterns, and historical yield records.</div>
+                </div>
+                <div class="how-step reveal reveal-delay-2">
+                    <div class="how-step-num">📊</div>
+                    <div class="how-step-title">Get Recommendations</div>
+                    <div class="how-step-desc">Receive ranked crop recommendations with expected profit, risk score, and
+                        confidence percentage for each.</div>
+                </div>
+                <div class="how-step reveal reveal-delay-3">
+                    <div class="how-step-num">💰</div>
+                    <div class="how-step-title">Maximize Profit</div>
+                    <div class="how-step-desc">Follow the detailed farming calendar and price alerts to optimize your
+                        selling strategy for maximum profit.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section testimonials-section">
+        <div class="section-inner">
+            <div class="section-header reveal" style="color:white">
+                <div class="section-label" style="color:var(--green-300)">Farmer Stories</div>
+                <h2 class="section-title" style="color:white">Trusted by <span style="color:var(--gold)">Farmers</span>
+                    Across India</h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card reveal">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <div class="testimonial-text">"KrishiPro suggested switching from wheat to mustard this rabi season.
+                        I got 40% more profit per acre. The mandi price alerts told me exactly when to sell."</div>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">R</div>
+                        <div>
+                            <div class="testimonial-name">Rajinder Singh</div>
+                            <div class="testimonial-info">8 acres • Ludhiana, Punjab</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal reveal-delay-1">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <div class="testimonial-text">"The profit calculator helped me understand exactly how much I'd make
+                        before even sowing. I used to guess earlier — now I have real data to plan with."</div>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">M</div>
+                        <div>
+                            <div class="testimonial-name">Meena Patel</div>
+                            <div class="testimonial-info">15 acres • Vadodara, Gujarat</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal reveal-delay-2">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <div class="testimonial-text">"Weather advisories saved my cotton crop last year. The system warned
+                        about the pest outbreak 4 days before it hit my area. Saved at least ₹80,000."</div>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">S</div>
+                        <div>
+                            <div class="testimonial-name">Suresh Reddy</div>
+                            <div class="testimonial-info">22 acres • Warangal, Telangana</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div>
+                    <div class="nav-brand" style="margin-bottom:12px">
+                        <div class="nav-logo">🌾</div>
+                        <div>
+                            <div class="nav-brand-text" style="-webkit-text-fill-color:white;color:white">KrishiPro
+                            </div>
+                            <div class="nav-brand-tag">AI Crop Optimizer</div>
+                        </div>
+                    </div>
+                    <div class="footer-brand-desc">India's most advanced AI-powered crop profit optimization platform.
+                        Helping farmers make data-driven decisions since 2022.</div>
+                </div>
+                <div>
+                    <div class="footer-col-title">Platform</div>
+                    <div class="footer-col-links">
+                        <span class="footer-col-link" onclick="scrollToSection('optimizer')">Crop Optimizer</span>
+                        <span class="footer-col-link" onclick="scrollToSection('market')">Market Prices</span>
+                        <span class="footer-col-link" onclick="scrollToSection('calculator')">Profit Calculator</span>
+                        <span class="footer-col-link" onclick="scrollToSection('weather')">Weather</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="footer-col-title">Resources</div>
+                    <div class="footer-col-links">
+                        <span class="footer-col-link">Farming Calendar</span>
+                        <span class="footer-col-link">Govt Schemes</span>
+                        <span class="footer-col-link">Crop Encyclopedia</span>
+                        <span class="footer-col-link">API Docs</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="footer-col-title">Support</div>
+                    <div class="footer-col-links">
+                        <span class="footer-col-link">Help Center</span>
+                        <span class="footer-col-link">Contact Us</span>
+                        <span class="footer-col-link">Privacy Policy</span>
+                        <span class="footer-col-link">Terms of Service</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <div class="footer-copy">© 2025 KrishiPro. Empowering Indian Farmers with AI.</div>
+                <div class="footer-badges">
+                    <div class="footer-badge">Flask API</div>
+                    <div class="footer-badge">ML Model</div>
+                    <div class="footer-badge">Netlify</div>
+                    <div class="footer-badge">Render</div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <button class="chat-toggle" id="chatToggle" onclick="chatbot?.toggle()" aria-label="Toggle assistant chat">Ask
+        AI</button>
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">
+            <div>
+                <div class="chat-title" id="chatTitle">KrishiPro Assistant</div>
+                <div class="chat-status" id="chatStatus">Status: Ready</div>
+            </div>
+            <button class="chat-close" onclick="chatbot?.toggle()">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-row">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Ask about crops, profit, weather"
+                onkeydown="if(event.key==='Enter'){chatbot?.sendMessage(this.value);this.value='';}">
+            <button class="chat-voice-btn" id="chatVoiceBtn" onclick="voiceInput?.toggle()" aria-label="Voice input"
+                title="Voice input">
+                <svg class="chat-voice-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path
+                        d="M12 14a3 3 0 0 0 3-3V7a3 3 0 1 0-6 0v4a3 3 0 0 0 3 3zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.92V21h2a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2h2v-3.08A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0z" />
+                </svg>
+                <span class="sr-only" id="chatVoiceText">Voice</span>
+            </button>
+            <button class="chat-send" id="chatSendBtn"
+                onclick="const inp=document.getElementById('chatInput'); chatbot?.sendMessage(inp.value); inp.value='';">Send</button>
+        </div>
+        <div class="chat-actions-row" id="chatActionsRow">
+            <button class="chat-retry" id="chatRetryBtn" onclick="chatbot?.retryLastMessage()">Retry Last
+                Message</button>
+        </div>
+    </div>
+
+    <script src="/static/js/config.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script src="/static/js/advanced-features.js"></script>
+</body>
+
+</html>

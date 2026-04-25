@@ -1,0 +1,33 @@
+[build]
+  publish = "frontend"
+  command = "echo 'Static frontend build complete'"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/proxy/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/predict"
+  to = "/.netlify/functions/proxy/predict"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/mandi-prices"
+  to = "/.netlify/functions/proxy/mandi-prices"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/chat"
+  to = "/.netlify/functions/proxy/chat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  
